@@ -10,7 +10,7 @@ namespace fil_rouge_api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    //[Authorize]
     public class UserController : GenericCrudController<User, UserDTO>
     {
         public UserController(IRepository<User> genericRepository, IMapper mapper) : base(genericRepository, mapper)

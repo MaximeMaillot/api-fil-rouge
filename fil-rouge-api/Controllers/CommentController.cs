@@ -10,7 +10,7 @@ namespace fil_rouge_api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
+    //[Authorize]
     public class CommentController : GenericCrudController<Comment, CommentDTO>
     {
         public CommentController(IRepository<Comment> genericRepository, IMapper mapper) : base(genericRepository, mapper)

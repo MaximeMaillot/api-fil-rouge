@@ -2,5 +2,7 @@
 {
     public class CommentDTO
     {
+        public string? Message { get; set; }
+        public UserDTO? User { get; set; }
     }
 }

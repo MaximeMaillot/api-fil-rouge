@@ -1,6 +1,6 @@
-﻿namespace GenericClassHelper.Classes
+﻿namespace ClassHelper.Classes
 {
-    public class GenericClass<TEntity>
+    public class ClassPropertiesHelper<TEntity>
     {
         public static object GetValue(TEntity item, string propertyName)
         {

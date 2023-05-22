@@ -39,7 +39,7 @@ namespace fil_rouge_api.Extensions
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "PokemonApi", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "FilRougeApi", Version = "v1" });
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,
@@ -80,6 +80,7 @@ namespace fil_rouge_api.Extensions
             builder.Services.AddScoped<IRepository<Comment>, CommentRepository>();
             builder.Services.AddScoped<IRepository<Project>, ProjectRepository>();
             builder.Services.AddScoped<IRepository<Models.Task>, TaskRepository>();
+            builder.Services.AddScoped<IRepository<ProjectUser>, ProjectUserRepository>();
         }
 
         private static void AddCors(this WebApplicationBuilder builder)
@@ -125,7 +126,7 @@ namespace fil_rouge_api.Extensions
                         ClockSkew = TimeSpan.Zero // décallage possible de l'expiration du token
                     };
                 });
-
+            /*
             // Authorization
             builder.Services.AddAuthorization(options =>
             {
@@ -140,6 +141,7 @@ namespace fil_rouge_api.Extensions
                                                                               //policy.RequireClaim("EstUnDresseurPokemon", "true"); // on peut ajouter la vérification d'autres claims
                 });
             });
+            */
         }
 
         private static void AddSession(this WebApplicationBuilder builder)

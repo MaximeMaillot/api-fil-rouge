@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EFHelper\EFHelper.csproj" />
-    <ProjectReference Include="..\GenericClassHelper\GenericClassHelper.csproj" />
+    <ProjectReference Include="..\GenericClassHelper\ClassHelper.csproj" />
   </ItemGroup>
 
 </Project>

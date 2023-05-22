@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GenericClassHelper\GenericClassHelper.csproj" />
+    <ProjectReference Include="..\GenericClassHelper\ClassHelper.csproj" />
   </ItemGroup>
 
 </Project>

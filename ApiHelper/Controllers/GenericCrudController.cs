@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using EFHelper.Interfaces;
 using EFHelper.Repositories;
-using GenericClassHelper.Classes;
+using ClassHelper.Classes;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
@@ -10,7 +10,7 @@ namespace ApiHelper.Controllers
 {
     [ApiController]
     public class GenericCrudController<TEntity, TEntityDTO> : ControllerBase where TEntity : class 
-                                                                         where TEntityDTO : class
+                                                                             where TEntityDTO : class
     {
         protected readonly IRepository<TEntity> _genericRepository;
         protected readonly IMapper _mapper;
@@ -51,7 +51,7 @@ namespace ApiHelper.Controllers
         {
             var entity = _mapper.Map<TEntityDTO, TEntity>(entityDTO);
             int id = await _genericRepository.AddAsync(entity);
-            GenericClass<TEntityDTO>.SetValue(entityDTO, "Id", id);
+            ClassPropertiesHelper<TEntityDTO>.SetValue(entityDTO, "Id", id);
             return Ok(new
             {
                 Message = "",
@@ -82,9 +82,9 @@ namespace ApiHelper.Controllers
         [Route("{id}")]
         public virtual async Task<IActionResult> Put([FromRoute] object id, [FromBody] TEntityDTO entityDTO)
         {
-            if (id != GenericClass<TEntityDTO>.GetValue(entityDTO, "Id"))
+            if (id != ClassPropertiesHelper<TEntityDTO>.GetValue(entityDTO, "Id"))
             {
-                GenericClass<TEntityDTO>.SetValue(entityDTO, "Id", id);
+                ClassPropertiesHelper<TEntityDTO>.SetValue(entityDTO, "Id", id);
                 await Put(entityDTO);
             }
             return NotFound(new

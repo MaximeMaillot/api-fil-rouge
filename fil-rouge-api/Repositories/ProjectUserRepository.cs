@@ -14,7 +14,7 @@ namespace fil_rouge_api.Repositories
 
         public async Task<bool> IsUserAdmin(int userId, int projectId)
         {
-            var result = base.GetAsync(e => e.UserId == userId && e.ProjectId == projectId).Result;
+            var result = await base.GetAsync(e => e.UserId == userId && e.ProjectId == projectId);
             if (result == null)
             {
                 return false;
@@ -22,9 +22,13 @@ namespace fil_rouge_api.Repositories
             return result.IsAdmin;
         }
 
-        public List<ProjectUser> GetProjectByUserId(int userId)
+        public async Task<List<ProjectUser>> GetProjectUserByUserId(int userId)
         {
-            return GetDbSet().Include(e => e.Project).ThenInclude(e => e.Tasks).Where(e => e.UserId == userId).ToList();
+            return await GetDbSet()
+                .Include(e => e.Project)
+                .ThenInclude(e => e!.Tasks)
+                .Where(e => e.UserId == userId && e.Project!.DateDeleted == null)
+                .ToListAsync();
         }
     }
 }

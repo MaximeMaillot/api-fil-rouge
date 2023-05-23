@@ -28,7 +28,7 @@ namespace fil_rouge_api.Data
                 .WithMany(e => e.Projects)
                 .UsingEntity<ProjectUser>(
                     r => r.HasOne(e => e.User).WithMany().HasForeignKey(e => e.UserId),
-                    l => l.HasOne(e => e.Project).WithMany().HasForeignKey(e => e.UserId)
+                    l => l.HasOne(e => e.Project).WithMany().HasForeignKey(e => e.ProjectId)
                 );
 
             modelBuilder.Entity<Project>()
@@ -56,21 +56,21 @@ namespace fil_rouge_api.Data
                     Id = 1,
                     Name = "Maxime",
                     Email = "maxime@fil-rouge.com",
-                    Password = PasswordService.GetPassword("1111")
+                    Password = PasswordService.EncryptPassword("1111")
                 },
                 new User()
                 {
                     Id = 2,
                     Name = "Fred",
                     Email = "fred@fil-rouge.com",
-                    Password = PasswordService.GetPassword("2222")
+                    Password = PasswordService.EncryptPassword("2222")
                 },
                 new User()
                 {
                     Id = 3,
                     Name = "Avril",
                     Email = "avril@fil-rouge.com",
-                    Password = PasswordService.GetPassword("333")
+                    Password = PasswordService.EncryptPassword("333")
                 }
             };
 

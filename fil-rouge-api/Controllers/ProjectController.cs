@@ -4,14 +4,16 @@ using EFHelper.Interfaces;
 using fil_rouge_api.DTOs;
 using fil_rouge_api.Models;
 using fil_rouge_api.Repositories;
+using fil_rouge_api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace fil_rouge_api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    //[Authorize]
+    [Authorize]
     public class ProjectController : GenericCrudController<Project, ProjectDTO>
     {
         private readonly IRepository<ProjectUser> _projectUserRepository;
@@ -20,11 +22,15 @@ namespace fil_rouge_api.Controllers
             _projectUserRepository = projectUserRepository;
         }
 
-        [HttpGet]
-        [Route("/user/{id}")]
-        public IActionResult GetProjectsByUser([FromRoute] int id)
+        public override async Task<IActionResult> GetAll()
         {
-            List<Project> projects =  (_projectUserRepository as ProjectUserRepository).GetProjectByUserId(id)
+            int? userId = JwtService.GetJwtTokenUserId(HttpContext);
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+            List<ProjectUser> projectsUser = await (_projectUserRepository as ProjectUserRepository).GetProjectUserByUserId((int)userId);
+            List<Project> projects = projectsUser
                 .Select(pu =>
                 {
                     return new Project()
@@ -38,19 +44,24 @@ namespace fil_rouge_api.Controllers
 
             if (projects == null)
             {
-                return NotFound();
+                return NoContent();
             }
 
             List<ProjectDTO> projectsDTO = _mapper.Map<List<Project>, List<ProjectDTO>>(projects);
-            
+
             return Ok(projectsDTO);
         }
 
         [HttpGet]
-        [Route("{userId}/{projectId}")]
-        public async Task<IActionResult> GetUserRules([FromRoute] int userId, [FromRoute] int projectId)
+        [Route("authenticate/{projectId}")]
+        public async Task<IActionResult> GetUserProjectAuthority([FromRoute] int projectId)
         {
-            bool isAdmin = await (_projectUserRepository as ProjectUserRepository).IsUserAdmin(userId, projectId);
+            int? userId = JwtService.GetJwtTokenUserId(HttpContext);
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+            bool isAdmin = await (_projectUserRepository as ProjectUserRepository).IsUserAdmin((int)userId, projectId);
             return Ok(isAdmin);
         }
     }

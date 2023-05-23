@@ -10,7 +10,7 @@ namespace fil_rouge_api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    //[Authorize]
+    [Authorize]
     public class TaskController : GenericCrudController<Models.Task, TaskDTO>
     {
         public TaskController(IRepository<Models.Task> genericRepository, IMapper mapper) : base(genericRepository, mapper)

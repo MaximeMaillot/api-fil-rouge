@@ -26,8 +26,15 @@ namespace fil_rouge_api.Repositories
         {
             return await GetDbSet()
                 .Include(e => e.Project)
-                .ThenInclude(e => e!.Tasks)
                 .Where(e => e.UserId == userId && e.Project!.DateDeleted == null)
+                .ToListAsync();
+        }
+
+        public async Task<List<ProjectUser>> GetProjectUserByProjectId(int projectId)
+        {
+            return await GetDbSet()
+                .Include(e => e.User)
+                .Where(e => e.ProjectId == projectId && e.User!.DateDeleted == null)
                 .ToListAsync();
         }
     }

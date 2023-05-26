@@ -16,5 +16,14 @@ namespace fil_rouge_api.Controllers
         public TaskController(IRepository<Models.Task> genericRepository, IMapper mapper) : base(genericRepository, mapper)
         {
         }
+
+        [Route("project/{projectId}")]
+        [HttpGet]
+        public async Task<IActionResult> GetTasksByProjectId([FromRoute] int projectId)
+        {
+            List<Models.Task> tasks = await _genericRepository.GetAllAsync(e => e.ProjectId == projectId);
+            List<TaskDTO> taskDTOs = _mapper.Map<List<Models.Task>, List<TaskDTO>>(tasks);
+            return Ok(taskDTOs);
+        }
     }
 }

@@ -7,7 +7,6 @@ using fil_rouge_api.Repositories;
 using fil_rouge_api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace fil_rouge_api.Controllers
 {
@@ -29,18 +28,8 @@ namespace fil_rouge_api.Controllers
             {
                 return Unauthorized();
             }
-            List<ProjectUser> projectsUser = await (_projectUserRepository as ProjectUserRepository).GetProjectUserByUserId((int)userId);
-            List<Project> projects = projectsUser
-                .Select(pu =>
-                {
-                    return new Project()
-                    {
-                        Id = pu.ProjectId,
-                        Name = pu.Project.Name,
-                        Tasks = pu.Project.Tasks,
-                        Description = pu.Project.Description
-                    };
-                }).ToList(); ;
+            List<ProjectUser> projectsUser = await ((ProjectUserRepository)_projectUserRepository).GetProjectUserByUserId((int)userId);
+            List<Project> projects = projectsUser.Select(x => x.Project!).ToList();
 
             if (projects == null)
             {
@@ -61,7 +50,7 @@ namespace fil_rouge_api.Controllers
             {
                 return Unauthorized();
             }
-            bool isAdmin = await (_projectUserRepository as ProjectUserRepository).IsUserAdmin((int)userId, projectId);
+            bool isAdmin = await ((ProjectUserRepository)_projectUserRepository).IsUserAdmin((int)userId, projectId);
             return Ok(isAdmin);
         }
     }

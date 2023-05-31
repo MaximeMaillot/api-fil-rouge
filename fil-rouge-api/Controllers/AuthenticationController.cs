@@ -15,6 +15,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using fil_rouge_api.Services;
+using Microsoft.Extensions.Primitives;
 
 namespace fil_rouge_api.Controllers
 {
@@ -80,6 +81,21 @@ namespace fil_rouge_api.Controllers
                 Message = "Authentication successfull !!!!!!!",
                 User = loginResponseDTO
             });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetTokenUser()
+        {
+            var token = JwtService.GetTokenData(Request.HttpContext);
+            if (token == null) return BadRequest("Invalid JWT Token !");
+            var payload = token.Payload.Claims.ToList();
+            var userId = payload.First(d =>
+            {
+                return d.Type == "UserId";
+            }).Value;
+            var user = await _userRepository.GetAsync(u => u.Id == Convert.ToInt32(userId));
+            var userDTO = _mapper.Map<User, UserDTO>(user);
+            return Ok(userDTO);
         }
     }
 }

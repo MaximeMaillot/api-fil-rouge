@@ -1,4 +1,5 @@
-﻿using fil_rouge_api.Helpers;
+﻿using Azure.Core;
+using fil_rouge_api.Helpers;
 using fil_rouge_api.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -37,13 +38,44 @@ namespace fil_rouge_api.Services
             try
             {
                 return Convert.ToInt32(context.User.Claims.FirstOrDefault(x => x.Type == "UserId").Value);
-            } catch (NullReferenceException e)
+            } catch (NullReferenceException)
             {
                 return null;
-            } catch (FormatException e)
+            } catch (FormatException)
             {
                 return null;
             }
+        }
+
+        public static bool GetJwtTokenValidity(HttpContext context)
+        {
+            var authorization = context.Request.Headers.Authorization;
+            if (authorization.Count > 0)
+            {
+                var stream = authorization[0]!.Replace("Bearer ", string.Empty);
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(stream);
+                var tokenS = jsonToken as JwtSecurityToken;
+                return DateTime.Now < tokenS!.ValidTo;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public static JwtSecurityToken? GetTokenData(HttpContext context)
+        {
+            var authorization = context.Request.Headers.Authorization;
+            if (authorization.Count > 0)
+            {
+                var stream = authorization[0]!.Replace("Bearer ", string.Empty);
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(stream);
+                var tokenS = jsonToken as JwtSecurityToken;
+                return tokenS;
+            }
+            return null;
         }
     }
 }

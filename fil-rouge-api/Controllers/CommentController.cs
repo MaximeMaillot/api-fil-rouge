@@ -16,5 +16,14 @@ namespace fil_rouge_api.Controllers
         public CommentController(IRepository<Comment> genericRepository, IMapper mapper) : base(genericRepository, mapper)
         {
         }
+
+        [Route("task/{taskId}")]
+        [HttpGet]
+        public async Task<IActionResult> GetCommentByTaskId([FromRoute] int taskId)
+        {
+            List<Comment> comments = await _genericRepository.GetAllAsync(e => e.TaskId == taskId, e => e.User);
+            List<CommentDTO> commentDTOs = _mapper.Map<List<Comment>, List<CommentDTO>>(comments);
+            return Ok(commentDTOs);
+        }
     }
 }
